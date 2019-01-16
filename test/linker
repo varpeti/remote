@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#$1 = '$file_name'
+#$2 = '${file_base_name}'
+
+##################A projekt paraméterei:################
+fordito="g++"
+projectfileok="test.cpp ../remote.cpp"
+parameterek="-std=c++14"
+nev="test.run"
+futtatas=true
+########################################################
+
+
+
+################Fordítás és futtatás:###################
+if [[ ! -d "bin" ]]; then
+	mkdir "bin"
+fi
+
+nev="bin/$nev"
+
+if [ -f $nev ]; then ## Biztonsági mentés
+    mv $nev $nev".bak";
+fi
+
+$fordito $projectfileok $parameterek "-o" $nev
+
+if [[ "$futtatas" = true && -f $nev ]]; then
+    timeout 4s gnome-terminal -- ./dummy.run;
+	timeout 4s gnome-terminal -- sudo $nev;
+fi
+########################################################
