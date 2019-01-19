@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "remote.h"
 
 class remoteext
@@ -30,8 +32,8 @@ public:
 
     static unsigned long findByPattern(remote::Handle &handle, const char* data, const char* pattern)
     {
-        unsigned long offset=0;
-        while (offset==0) 
+        unsigned long address=0;
+        while (address==0) 
         {
             if (!handle.IsRunning()) throw "findByPattern: Target is not running";
     
@@ -39,21 +41,21 @@ public:
     
             for (auto region : handle.regions)
             {
-                offset = (long)region.find
+                address = (long)region.find
                 (
                     handle,
                     data,
                     pattern
                 );
     
-                printf("%lx - %lx\n",region.start, offset);
-                if (offset>0) break;
+                printf("%lx - %lx\n",region.start, address);
+                if (address>0) break;
             }
     
             usleep(500);
         }
     
-        return offset;
+        return address;
     }
 
     static remote::MapModuleMemoryRegion *getRegionOfAddress(remote::Handle &handle, const void* address)

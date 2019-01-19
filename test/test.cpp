@@ -15,7 +15,6 @@ int main()
         remoteext::init(handle,PROCESS_NAME);
         printf("Discovered with PID: %d \n",handle.GetPid());
 
-
         printf("Finding address by Pattern: \n");
         unsigned long address = remoteext::findByPattern(handle,PATTERN);
         printf("Discovered address: %lx \n",address);
