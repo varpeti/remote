@@ -9,15 +9,22 @@ int main()
 {
     try
     {
+        //*/// Init
+
         remote::Handle handle;
 
         printf("Finding process ID: \n");
         remoteext::init(handle,PROCESS_NAME);
         printf("Discovered with PID: %d \n",handle.GetPid());
 
+        //*/// FindByPattern
+
         printf("Finding address by Pattern: \n");
         unsigned long address = remoteext::findByPattern(handle,PATTERN);
         printf("Discovered address: %lx \n",address);
+
+
+        //*/// Memory dump
 
         printf("Dump nearby memory of address: \n");
 
@@ -26,6 +33,8 @@ int main()
 
         region->print(handle, (void*)address, size);
 
+        //*/// Read-Write
+
         int num(0);
         if( handle.Read( (void*)(address+NUM_OFFSET), &num, sizeof(num) ) ) printf("num: %d\n",num);
         else throw "Reading failed";
@@ -33,6 +42,12 @@ int main()
         num=9;
         if( handle.Write( (void*)(address+NUM_OFFSET), &num, sizeof(num) ) ) printf("Writed successfully: %d\n",num);
         else throw "Writing failed";
+
+        //*/// Scan
+
+        int a(17); printf("%lx: %d\n", (unsigned long)&a, a);
+        std::vector<size_t> addresses;
+        remoteext::getAddressesOfValue(handle, &a, sizeof(a), addresses);
 
     }
     catch (const char* msg)

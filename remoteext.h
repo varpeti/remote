@@ -75,4 +75,49 @@ public:
         return region;
     }
 
+    static void getAddressesOfValue(remote::Handle &handle, void* addressOfValue, size_t size,std::vector<size_t> &addresses)
+    {
+        char *buffer = (char*)addressOfValue;
+
+        //*///
+
+        printf("(self)%lx:",(unsigned long)buffer);
+        for (int i = 0; i < size; ++i)
+        {
+            printf("%02x ",buffer[i]);
+        }
+        printf("\n");
+
+        //*///
+
+        if (!handle.IsRunning()) throw "getAddressesOfValue: Target is not running";
+
+        handle.ParseMaps();
+
+        for (auto region : handle.regions)
+        {
+            region.find(handle,buffer,size,addresses);
+        }
+
+        //*/// 
+
+        for (int i = 0; i < addresses.size(); ++i)
+        {
+            printf("%lx: ",addresses[i]);
+            char data[size];
+            if( handle.Read( (void*)(addresses[i]), data, sizeof(data) ) ) 
+            {
+                for (int j = 0; j < size; ++j)
+                {
+                    printf("%02x ",data[j]);
+                }
+            }
+            
+            printf("\n");
+        }
+
+        //*///
+
+    }
+
 };

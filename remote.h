@@ -46,6 +46,7 @@ namespace remote {
 		unsigned long client_start;
 
 		void* find(Handle handle, const char* data, const char* pattern);
+        void find(Handle handle, const char* data, size_t size, std::vector<unsigned long> &addresses);
         void print(Handle handle);
         void print(Handle handle, void* address, unsigned long size);
 	};
